@@ -64,6 +64,8 @@ for lett in string.ascii_uppercase:
     fname = f"{lett}.txt"
     with open(fname , "w") as file:
         file.write("Hello")
+    if os.path.exists(fname):
+        os.remove(fname)
 
 
 #task 7
