@@ -70,14 +70,21 @@ class Coin(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("game-coins_2379006.png!sw800.png").convert()
-        self.image.set_colorkey((255, 255 , 255))
+        self.image.set_colorkey((255, 255, 255))
         self.image = pygame.transform.scale(self.image, (30, 30))
         self.rect = self.image.get_rect()
+        self.speed = 3  # Скорость падения монеты
         self.reset_position()
     
     def reset_position(self):
-        """Перемещает монету в случайное место в нижней части экрана."""
-        self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), random.randint(SCREEN_HEIGHT // 2, SCREEN_HEIGHT - 50))
+        """Перемещает монету в случайное положение сверху."""
+        self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), random.randint(-100, -30))
+
+    def move(self):
+        """Двигает монету вниз и сбрасывает её, если она уходит за экран."""
+        self.rect.move_ip(0, self.speed)
+        if self.rect.top > SCREEN_HEIGHT:
+            self.reset_position()
 
 # Создание игровых объектов
 P1 = Player()
@@ -97,7 +104,7 @@ all_sprites.add(P1, E1, C1)
 # Таймер для увеличения скорости
 INC_SPEED = pygame.USEREVENT + 1
 pygame.time.set_timer(INC_SPEED, 1000)
-
+pygame.mixer.Sound('Lectures_G2_Week10_racer_resources_background.wav').play()
 while True:
     for event in pygame.event.get():
         if event.type == INC_SPEED:
@@ -119,13 +126,12 @@ while True:
     
     # Обновление и отрисовка спрайтов
     for entity in all_sprites:
-        if isinstance(entity, Player) or isinstance(entity, Enemy): 
-            entity.move()
+        entity.move()
         DISPLAYSURF.blit(entity.image, entity.rect)
     
     # Проверка столкновения игрока с врагом
     if pygame.sprite.spritecollideany(P1, enemies):
-        pygame.mixer.Sound('Lectures_G2_Week10_racer_resources_crash.mp3').play()
+        pygame.mixer.Sound('Lectures_G2_Week10_racer_resources_crash.wav').play()
         time.sleep(1)
         DISPLAYSURF.fill(RED)
         DISPLAYSURF.blit(game_over, (30, 250))
