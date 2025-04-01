@@ -7,14 +7,14 @@ import time
 pygame.init()
 
 
-WIDTH, HEIGHT = 800, 800
+WIDTH, HEIGHT = 1000, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
 
 body = pygame.image.load("clock.png")
-right_hand = pygame.image.load("sec_hand.png")  
-left_hand = pygame.image.load("min_hand.png")   
+right_hand = pygame.image.load("min_hand.png")  
+left_hand = pygame.image.load("sec_hand.png")   
 
 
 body = pygame.transform.scale(body, (800, 800)).convert()
