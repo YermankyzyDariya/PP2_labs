@@ -19,6 +19,15 @@ UP = (0, -TILE_SIZE)
 DOWN = (0, TILE_SIZE)
 LEFT = (-TILE_SIZE, 0)
 RIGHT = (TILE_SIZE, 0)
+class MiddleWall:
+    def __init__(self):
+        self.position = (WIDTH // 2, HEIGHT // 2)
+    def draw(self):
+        
+            pygame.draw.rect(screen, GREEN, (self.position ,((WIDTH // 2) // TILE_SIZE, (HEIGHT // 2)// TILE_SIZE)))
+    
+       
+wall = MiddleWall()
 
 # Класс змейки
 class Snake:
@@ -33,9 +42,13 @@ class Snake:
         dx, dy = self.direction
         new_head = (x + dx, y + dy)
 
+
         # Проверяем, не вышла ли змейка за границы экрана
         if new_head[0] < 0 or new_head[0] >= WIDTH or new_head[1] < 0 or new_head[1] >= HEIGHT:
             return False  # Игра окончена
+       
+             
+
 
         # Проверка на столкновение с самой собой
         if new_head in self.body:
@@ -100,29 +113,36 @@ while running:
                 snake.change_direction(LEFT)
             elif event.key == pygame.K_RIGHT:
                 snake.change_direction(RIGHT)
-            elif event.key == pygame.K_r:  # Перезапуск игры при нажатии R
-                snake = Snake()
-                food = Food(snake)
-                score = 0
+            
+            
 
     # Движение змейки
     if not snake.move():
         running = False  # Если змейка выходит за границы или врезается в себя, игра заканчивается
+    
+
 
     # Проверка на поедание еды
     if snake.body[0] == food.position:
         snake.grow_snake()  # Увеличиваем длину змейки
         food = Food()  # Создаем новую еду
-        score += 1  # Увеличиваем счет
+        score += 1  # Увеличиваем сче
+    if  snake.body[0] == wall.position:
+           
+            pygame.quit()
+
+    
 
     # Отрисовка объектов
     snake.draw()
     food.draw()
+    wall.draw()
 
     # Отображение счета
     font = pygame.font.SysFont("Verdana", 20)
     score_text = font.render(f"Score: {score}", True, (0, 0, 0))
     screen.blit(score_text, (10, 10))
+    wall
 
     pygame.display.flip()  # Обновляем экран
     clock.tick(10)  # Управляем скоростью игры
