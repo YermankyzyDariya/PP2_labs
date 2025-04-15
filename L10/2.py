@@ -126,6 +126,21 @@ class Food:
 
     def has_expired(self):
         return time.time() - self.spawn_time > self.lifetime 
+    
+class Wall:
+    def __init__(self, snake):
+        self.position = self.generate_wall(snake)
+        
+    def generate_wall(self, snake):
+       
+        while True:
+            x = random.randint(0, (WIDTH - CELL_SIZE) // CELL_SIZE) * CELL_SIZE
+            y = random.randint(0, (HEIGHT - CELL_SIZE) // CELL_SIZE) * CELL_SIZE
+            if (x, y) not in snake.body:
+                return (x, y)
+
+    def draw(self):
+        pygame.draw.rect(screen, (128, 128, 128), (*self.position, CELL_SIZE, CELL_SIZE))
 
 
 def get_player_name():
@@ -149,10 +164,12 @@ def main():
     clock = pygame.time.Clock()
     snake = Snake()
     food = Food(snake)
+    walls = []
     running = True
     speed = 6
 
     wait_for_key()
+    last_wall_time = time.time()
     
 
     while running:
@@ -169,6 +186,9 @@ def main():
                     snake.change_direction((-CELL_SIZE, 0))
                 elif event.key == pygame.K_RIGHT:
                     snake.change_direction((CELL_SIZE, 0))
+        if level >= 5 or time.time() - last_wall_time > 5:
+            walls.append(Wall(snake))
+            last_wall_time = time.time()             
 
         snake.move()
 
@@ -180,12 +200,17 @@ def main():
             if score % 3 == 0:
                 level += 1
                 speed += 2
+        for wall in walls:
+            if snake.body[0] == wall.position:
+                running = False
 
         if food.has_expired():
             food = Food(snake)
 
         if snake.check_collision():
             running = False
+        for wall in walls:
+            wall.draw()
 
         pygame.draw.rect(screen, RED, (*food.position, CELL_SIZE, CELL_SIZE))
         for segment in snake.body:
