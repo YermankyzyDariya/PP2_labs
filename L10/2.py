@@ -63,6 +63,23 @@ def save_game(user_id, level, score):
     conn.commit()
     conn.close()
 
+def wait_for_key():
+    font = pygame.font.Font(None, 40)
+    message = font.render("Press any key to start", True, WHITE)
+    screen.fill(BLACK)
+    screen.blit(message, (WIDTH // 2 - message.get_width() // 2, HEIGHT // 2))
+    pygame.display.flip()
+    
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                waiting = False
+
+
 
 
 class Snake:
@@ -116,6 +133,8 @@ def get_player_name():
     return username
 
 
+
+
 def main():
     username = get_player_name()  
     user = get_user(username)
@@ -132,6 +151,9 @@ def main():
     food = Food(snake)
     running = True
     speed = 6
+
+    wait_for_key()
+    
 
     while running:
         screen.fill(BLACK)
